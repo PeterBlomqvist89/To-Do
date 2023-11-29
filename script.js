@@ -5,12 +5,19 @@ const listContainer = document.getElementById("list-container");
 
 const setError = document.querySelector(".errorText");
 
-function addTodoToList(todo) {
+// const getSpan = document.querySelector(".span");
+
+//Funktion som skapar elementen för todon, span är krysset som man tar bort todos.
+function addTodoToList(todo, todoId) {
   let li = document.createElement("li");
   li.innerHTML = todo;
   listContainer.prepend(li);
+
   let span = document.createElement("span");
   span.innerHTML = "\u00d7";
+  span.className = "close";
+  span.id = `${todoId}`;
+
   li.prepend(span);
 }
 // FETCH
@@ -24,7 +31,8 @@ const loadData = async () => {
     let sortedTodos = data.sort((e1, e2) =>
       e1.createdAt > e2.createdAt ? 1 : e1.createdAt < e2.createdAt ? -1 : 0
     );
-    data.forEach((e) => addTodoToList(e.title));
+    data.forEach((e) => addTodoToList(e.title, e._id, e.completed));
+    console.log(data);
   } catch (error) {
     console.log(error.message);
   }
@@ -73,93 +81,40 @@ listContainer.addEventListener(
   (e) => {
     if (e.target.tagName === "LI") {
       e.target.classList.toggle("checked");
-      //   saveData();
     } else if (e.target.tagName === "SPAN") {
       e.target.parentElement.remove();
-      //   saveData();
     }
   },
   false
 );
 
-// function saveData() {
-//   localStorage.setItem("dataTodos", listContainer.innerHTML);
-// }
+// DELETE
+listContainer.addEventListener("click", async (event) => {
+  const clickedElement = event.target;
 
-// TODO
-// function addTask(event) {
-//     event.preventDefault()
-//     if (inputText.value === '') {
-//         setError.classList.add('is-invalid');
-//     } else {
-//         setError.classList.remove('is-invalid');
-//         let li = document.createElement('li');
-//         li.innerHTML = inputText.value;
-//         listContainer.appendChild(li);
-//         let span = document.createElement('span');
-//         span.innerHTML = '\u00d7';
-//         li.appendChild(span);
-//     }
-//     inputText.value = '';
-//     saveData();
-// }
+  // Om klickad element är en SPAN med klassen "close"
+  if (
+    clickedElement.tagName === "SPAN" &&
+    clickedElement.classList.contains("close")
+  ) {
+    try {
+      const todoId = clickedElement.id; // Hämta ID från span-elementet
 
-// FETCH
-// const loadData = async () => {
-//     try{
-//     const res = await fetch(BASE_URL);
-//     const data = await res.json();
-//     console.log(data);
-//     // Loopa igenom uppgifterna och skapa HTML-element för varje uppgift
-//     data.forEach(todo => {
-//         const todoItem = document.createElement('li');
-//         todoItem.textContent = todo.task;
+      const response = await fetch(
+        `https://js1-todo-api.vercel.app/api/todos/${todoId}?apikey=970e1bb6-b916-43c5-b75f-64ccfddd8dce`,
+        {
+          method: "DELETE",
+        }
+      );
 
-//         // Anta att du har en <ul> med id 'todo-list' på din sida där du vill lägga till uppgifterna
-//         document.getElementById('list-container').appendChild(todoItem);
-//     });
-// } catch (err) {
-//     console.log(err);
-// }
-// };
-
-// loadData();
-
-//Post
-
-// POST adds a random id to the object sent *funkar*
-// fetch(BASE_URL, {
-//     'method': 'POST',
-//     'body': JSON.stringify({
-//     userId: 1,
-//     title: 'clean room',
-//     completed: false
-// }),
-// 'headers': {
-// 'Content-type': 'application/json'
-// }
-// })
-// .then(response => response.json())
-// .then(json => console.log(json))
-
-// const deleteResource = async () => {
-//     try {
-//       const deleteResponse = await fetch('https://js1-todo-api.vercel.app/api/todos/656461299f9066156be3d25f?apikey=970e1bb6-b916-43c5-b75f-64ccfddd8dce', {
-//         method: 'DELETE',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//       });
-
-//       if (!deleteResponse.ok) {
-//         throw new Error('Failed');
-//       }
-
-//       const data = await deleteResponse.json();
-//       console.log('Resursen har raderats:', data);
-//     } catch (error) {
-//       console.error('Fel vid radering:', error);
-//     }
-//   }
-
-//   deleteResource();
+      if (response.status === 200) {
+        clickedElement.parentElement.remove(); // Ta bort förälderelementet (LI) från DOM:en
+        console.log("Todo borttagen");
+      } else {
+        throw new Error("Kunde inte ta bort todo");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+});
