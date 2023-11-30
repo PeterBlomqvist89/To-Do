@@ -5,7 +5,23 @@ const listContainer = document.getElementById("list-container");
 
 const setError = document.querySelector(".errorText");
 
-// const getSpan = document.querySelector(".span");
+// FETCH
+const loadData = async () => {
+  try {
+    const res = await fetch(BASE_URL);
+    if (res.status !== 200) {
+      throw new Error("Something went wrong");
+    }
+    const data = await res.json();
+
+    data.forEach((e) => addTodoToList(e.title, e._id, e.completed));
+    // console.log(data);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+loadData();
 
 //Funktion som skapar elementen för todon, span är krysset som man tar bort todos.
 function addTodoToList(todo, todoId) {
@@ -20,25 +36,6 @@ function addTodoToList(todo, todoId) {
 
   li.prepend(span);
 }
-// FETCH
-const loadData = async () => {
-  try {
-    const res = await fetch(BASE_URL);
-    if (res.status !== 200) {
-      throw new Error("Something went wrong");
-    }
-    const data = await res.json();
-    let sortedTodos = data.sort((e1, e2) =>
-      e1.createdAt > e2.createdAt ? 1 : e1.createdAt < e2.createdAt ? -1 : 0
-    );
-    data.forEach((e) => addTodoToList(e.title, e._id, e.completed));
-    console.log(data);
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-loadData();
 
 // TODO
 function addTask(event) {
@@ -64,9 +61,10 @@ async function postMyData(inputValue) {
       },
       body: JSON.stringify({ title: inputValue }),
     });
+    // console.log(response);
     if (response.status === 201) {
       const data = await response.json();
-      addTodoToList(data.title);
+      addTodoToList(data.title, data._id);
       console.log("Todo sparad");
     } else {
       throw new Error("Något gick fel vid skickande av data.");
@@ -76,6 +74,7 @@ async function postMyData(inputValue) {
   }
 }
 
+// Visar om uppgiften är klar
 listContainer.addEventListener(
   "click",
   (e) => {
