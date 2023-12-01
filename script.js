@@ -91,13 +91,12 @@ listContainer.addEventListener(
 listContainer.addEventListener("click", async (event) => {
   const clickedElement = event.target;
 
-  // Om klickad element är en SPAN med klassen "close"
   if (
     clickedElement.tagName === "SPAN" &&
     clickedElement.classList.contains("close")
   ) {
     try {
-      const todoId = clickedElement.id; // Hämta ID från span-elementet
+      const todoId = clickedElement.id;
 
       const response = await fetch(
         `https://js1-todo-api.vercel.app/api/todos/${todoId}?apikey=970e1bb6-b916-43c5-b75f-64ccfddd8dce`,
@@ -107,7 +106,7 @@ listContainer.addEventListener("click", async (event) => {
       );
 
       if (response.status === 200) {
-        clickedElement.parentElement.remove(); // Ta bort förälderelementet (LI) från DOM:en
+        clickedElement.parentElement.remove();
         console.log("Todo borttagen");
       } else {
         throw new Error("Kunde inte ta bort todo");
