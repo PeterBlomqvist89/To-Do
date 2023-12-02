@@ -1,3 +1,9 @@
+:root {
+  --blue-color: #0f78f0;
+  --red-color: #b22222;
+  --white-color: #f5f5f5;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,12 +11,38 @@
   font-family: "Jost", sans-serif;
 }
 h1 {
-  color: rgb(34, 101, 178);
+  color: var(--blue-color);
   font-size: 2rem;
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
   text-decoration: underline;
+}
+.modal {
+  z-index: 1;
+  max-width: 80%;
+  padding: 2rem;
+  background-color: var(--white-color);
+  color: var(--blue-color);
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  display: none;
+}
+.modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.262);
+  place-items: center;
+  display: none;
+}
+.open {
+  display: block;
 }
 .container {
   width: 100%;
@@ -25,7 +57,7 @@ h1 {
 .todoFrame {
   width: 100%;
   max-width: 600px;
-  background: #f5f5f5;
+  background: var(--white-color);
   margin: 100px auto 20px;
   padding: 40px 30px 80px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -44,7 +76,7 @@ h1 {
   position: relative;
   top: -22px;
   right: -20px;
-  color: firebrick;
+  color: var(--red-color);
   font-size: 0.7rem;
   visibility: hidden;
 }
@@ -62,7 +94,7 @@ button {
   border: none;
   outline: none;
   padding: 16px 20px;
-  background: rgb(15, 120, 240);
+  background: var(--blue-color);
   color: white;
   border-radius: 40px;
   cursor: pointer;
@@ -110,7 +142,7 @@ span {
   color: #a1a1a1;
   text-align: center;
   &:hover {
-    background: firebrick;
+    background: var(--red-color);
     color: white;
     border-radius: 50%;
   }

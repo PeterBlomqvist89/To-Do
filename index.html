@@ -20,9 +20,16 @@
     <title>Peters To-Do</title>
   </head>
   <body>
+    <div class="modal-bg"></div>
     <div class="container">
       <div class="todoFrame">
         <h1>To-Do List</h1>
+
+        <div class="modal" id="modal">
+          <p>You must finish the To-do before removing it..</p>
+          <button id="close-btn" class="btn btn-primary">Close</button>
+        </div>
+
         <form class="formClass" id="formId">
           <input type="text" id="inputText" placeholder="Add todo" />
           <button onclick="addTask(event)" type="submit" id="submitButton">
